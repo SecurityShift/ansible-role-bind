@@ -17,8 +17,27 @@
     owner: root
     group: named
     mode: 0640
-    backup: yes
   notify: restart named
+
+- name: Allow bind to write to master zone files
+  seboolean:
+    name: named_write_master_zones
+    state: yes
+    persistent: yes
+
+- name: Make sure services can pass through firewall
+  firewalld:
+    service: dns
+    permanent: true
+    immediate: true
+    state: enabled
+  when:
+    - firewalld_state != 'stopped'
+  notify:
+    - reload firewalld
+  tags:
+    - security
+    - firewall
 
 - name: Start services
   service:
