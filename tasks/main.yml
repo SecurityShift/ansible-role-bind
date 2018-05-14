@@ -30,6 +30,7 @@
     service: dns
     permanent: true
     immediate: true
+    zone: public
     state: enabled
   when:
     - firewalld_state != 'stopped'

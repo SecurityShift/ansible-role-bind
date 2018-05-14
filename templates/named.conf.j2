@@ -73,7 +73,7 @@ zone "{{ forward.zone }}" {
         {{ hostvars[forwarder]['ansible_host'] }};
 {% endfor %}
     };
-}
+};
 {% endfor %}
 {% endif %}
 
