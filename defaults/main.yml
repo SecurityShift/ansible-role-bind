@@ -5,3 +5,7 @@ bind_forward_zones: False
 bind_recursion: False
 bind_allow_query: False
 bind_acls: False
+bind_firewall_permit: False
+rndc_firewall_permit: False
+bind_allow_new_zones: false
+bind_request_ixfr: true

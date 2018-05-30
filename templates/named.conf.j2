@@ -20,12 +20,23 @@ acl "{{ acl.name }}" {
 {% endfor %}
 {% endif %}
 
+{% if 'authdns' in group_names %}
+include "/etc/rndc.designate.key";
+
+controls {
+{% for host in groups['openstack-controller'] %}
+        inet {{ ansible_host }} port 953 allow { {{ hostvars[host]['ansible_host']}}; } keys { "designate"; };
+{% endfor %}
+};
+{% endif %}
+
+
 options {
-        listen-on port 53 { any; };
-        listen-on-v6 port 53 { any; };
-        directory       "/var/named";
-        dump-file       "/var/named/data/cache_dump.db";
-        statistics-file "/var/named/data/named_stats.txt";
+        listen-on           port 53 { any; };
+        listen-on-v6        port 53 { any; };
+        directory           "/var/named";
+        dump-file           "/var/named/data/cache_dump.db";
+        statistics-file     "/var/named/data/named_stats.txt";
         memstatistics-file "/var/named/data/named_mem_stats.txt";
         allow-query     {
             localhost;
@@ -37,6 +48,9 @@ options {
         };
 
         recursion {% if bind_recursion %}yes{% else %}no{% endif %};
+
+        allow-new-zones {% if bind_allow_new_zones %}yes{% else %}no{% endif %};
+        request-ixfr {% if bind_request_ixfr %}yes{% else %}no{% endif %};
 
         dnssec-enable yes;
         dnssec-validation yes;

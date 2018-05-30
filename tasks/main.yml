@@ -25,20 +25,36 @@
     state: yes
     persistent: yes
 
-- name: Make sure services can pass through firewall
+- name: Make sure bind can pass through firewall
   firewalld:
-    service: dns
+    rich_rule: "rule family=ipv4 source address={{ item }} service name=dns accept"
     permanent: true
     immediate: true
     zone: public
     state: enabled
-  when:
-    - firewalld_state != 'stopped'
-  notify:
-    - reload firewalld
+  with_items: '{{ bind_firewall_permit }}'
+  when: firewalld_enabled and bind_firewall_permit
+  notify: reload firewalld
   tags:
     - security
     - firewall
+
+- name: Make sure rndc can pass through firewall
+  firewalld:
+    rich_rule: "rule family=ipv4 source address={{ item[0] }} port port=953 protocol={{ item[1] }} accept"
+    permanent: true
+    immediate: true
+    zone: public
+    state: enabled
+  with_nested:
+    - '{{ rndc_firewall_permit }}'
+    - [ udp, tcp ]
+  when: firewalld_enabled and rndc_firewall_permit
+  notify: reload firewalld
+  tags:
+    - security
+    - firewall
+
 
 - name: Start services
   service:
