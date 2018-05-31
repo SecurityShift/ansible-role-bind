@@ -79,15 +79,24 @@ zone "." IN {
 
 {% if bind_forward_zones %}
 {% for forward in bind_forward_zones %}
+{% if forward.group is defined or forward.servers is defined %}
 zone "{{ forward.zone }}" {
     type forward;
     forward only;
     forwarders {
+{% if forward.group is defined %}
 {% for forwarder in groups[forward.group] %}
         {{ hostvars[forwarder]['ansible_host'] }};
 {% endfor %}
+{% endif %}
+{% if forward.servers is defined %}
+{% for forwarder in forward.servers %}
+        {{ forwarder }};
+{% endfor %}
+{% endif %}
     };
 };
+{% endif %}
 {% endfor %}
 {% endif %}
 
