@@ -17,7 +17,7 @@
     owner: root
     group: named
     mode: 0640
-  notify: restart named
+  notify: reload named
 
 - name: Allow bind to write to master zone files
   seboolean:
