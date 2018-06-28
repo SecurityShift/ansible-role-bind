@@ -11,9 +11,9 @@
 // configuration located in /usr/share/doc/bind-{version}/Bv9ARM.html
 
 {% if bind_acls %}
-{% for acl in bind_acls %}
+{% for acl in bind_acls | sort %}
 acl "{{ acl.name }}" {
-{% for address in acl.addresses %}
+{% for address in acl.addresses | sort %}
     {{ address }};
 {% endfor %}
 };
@@ -24,7 +24,7 @@ acl "{{ acl.name }}" {
 include "/etc/rndc.designate.key";
 
 controls {
-{% for host in groups['openstack-controller'] %}
+{% for host in groups['openstack-controller'] | sort %}
         inet {{ ansible_host }} port 953 allow { {{ hostvars[host]['ansible_host']}}; } keys { "designate"; };
 {% endfor %}
 };
@@ -41,7 +41,7 @@ options {
         allow-query     {
             localhost;
 {% if bind_allow_query %}
-{% for acl in bind_allow_query %}
+{% for acl in bind_allow_query | sort %}
             {{ acl }};
 {% endfor %}
 {% endif %}
@@ -78,19 +78,19 @@ zone "." IN {
 };
 
 {% if bind_forward_zones %}
-{% for forward in bind_forward_zones %}
+{% for forward in bind_forward_zones | sort %}
 {% if forward.group is defined or forward.servers is defined %}
 zone "{{ forward.zone }}" {
     type forward;
     forward only;
     forwarders {
 {% if forward.group is defined %}
-{% for forwarder in groups[forward.group] %}
+{% for forwarder in groups[forward.group] | sort %}
         {{ hostvars[forwarder]['ansible_host'] }};
 {% endfor %}
 {% endif %}
 {% if forward.servers is defined %}
-{% for forwarder in forward.servers %}
+{% for forwarder in forward.servers | sort %}
         {{ forwarder }};
 {% endfor %}
 {% endif %}
