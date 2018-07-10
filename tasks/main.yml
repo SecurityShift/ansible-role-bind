@@ -9,6 +9,9 @@
     - bind
     - bind-utils
   notify: restart named
+  tags:
+    - bind
+    - install
 
 - name: update configuration
   template:
@@ -18,12 +21,18 @@
     group: named
     mode: 0640
   notify: reload named
+  tags:
+    - bind
+    - config
 
 - name: Allow bind to write to master zone files
   seboolean:
     name: named_write_master_zones
     state: yes
     persistent: yes
+  tags:
+    - bind
+    - selinux
 
 - name: Make sure bind can pass through firewall
   firewalld:
@@ -52,14 +61,16 @@
   when: firewalld_enabled and rndc_firewall_permit
   notify: reload firewalld
   tags:
+    - bind
     - security
     - firewall
-
 
 - name: Start services
   service:
     name: named
     state: started
     enabled: True
-
+  tags:
+    - bind
+    - service
 
