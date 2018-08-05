@@ -1,14 +1,5 @@
-// {{ ansible_managed }}
-//
-// named.conf
-//
-// Provided by Red Hat bind package to configure the ISC BIND named(8) DNS
-// server as a caching only nameserver (as a localhost DNS resolver only).
-//
-// See /usr/share/doc/bind*/sample/ for example named configuration files.
-//
-// See the BIND Administrator's Reference Manual (ARM) for details about the
-// configuration located in /usr/share/doc/bind-{version}/Bv9ARM.html
+# {{ ansible_managed }}
+# See {{ bind_role_git_repo }}/blob/master/templates/named.conf.j2
 
 {% if bind_acls %}
 {% for acl in bind_acls | sort %}

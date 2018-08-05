@@ -1,6 +1,7 @@
 ---
 # defaults file for bind
 
+bind_role_git_repo: https://github.com/SecurityShift/ansible-role-bind
 bind_forward_zones: False
 bind_recursion: False
 bind_allow_query: False
