@@ -4,8 +4,10 @@
   service:
     name: named
     state: restarted
+  when: no_restart is not defined and not no_restart
 
 - name: reload named
   service:
     name: named
     state: reloaded
+  when: no_reload is not defined and not no_reload
