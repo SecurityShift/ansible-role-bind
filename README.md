@@ -1,7 +1,7 @@
-Role Name
-=========
+bind
+====
 
-A brief description of the role goes here.
+Install and configure BIND and an authoritive server or recursor.
 
 Requirements
 ------------
@@ -35,4 +35,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Ben O'Hara <ben@securityshift.com>
