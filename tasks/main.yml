@@ -36,11 +36,11 @@
 
 - name: Make sure bind can pass through firewall
   firewalld:
-    rich_rule: "rule family=ipv4 source address={{ item }} service name=dns accept"
+    rich_rule: "rule family=ipv4 source address={{ item.source | default(item) }} service name=dns accept"
     permanent: true
     immediate: true
-    zone: public
-    state: enabled
+    zone: '{{ item.zone | default("public") }}'
+    state: '{{ item.state | default("enabled") }}'
   with_items: '{{ bind_firewall_permit }}'
   when: firewalld_enabled and bind_firewall_permit
   notify: reload firewalld
@@ -50,11 +50,11 @@
 
 - name: Make sure rndc can pass through firewall
   firewalld:
-    rich_rule: "rule family=ipv4 source address={{ item[0] }} port port=953 protocol={{ item[1] }} accept"
+    rich_rule: "rule family=ipv4 source address={{ item[0].source | default(item[0]) }} port port=953 protocol={{ item[1] }} accept"
     permanent: true
     immediate: true
-    zone: public
-    state: enabled
+    zone: '{{ item[0].zone | default("public") }}'
+    state: '{{ item[0].state | default("enabled") }}'
   with_nested:
     - '{{ rndc_firewall_permit }}'
     - [ udp, tcp ]
