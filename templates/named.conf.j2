@@ -11,15 +11,17 @@ acl "{{ acl.name }}" {
 {% endfor %}
 {% endif %}
 
+include "/etc/rndc.key";
 {% if 'authdns' in group_names %}
 include "/etc/rndc.designate.key";
+{% endif %}
 
 controls {
-{% for host in groups['openstack-controller'] | sort %}
-        inet {{ ansible_host }} port 953 allow { {{ hostvars[host]['ansible_host']}}; } keys { "designate"; };
-{% endfor %}
-};
+        inet 127.0.0.1 port 953 allow { 127.0.0.1; } keys { "rndc-key"; };
+{% if 'authdns' in group_names %}
+        inet {{ ansible_host }} port 953 allow { {% for host in groups['openstack-controller'] | sort %}{{ hostvars[host]['ansible_host']}}; {% endfor %}} keys { "designate"; };
 {% endif %}
+};
 
 
 options {
@@ -59,6 +61,9 @@ options {
 
 
 logging {
+{% if not bind_security_log %}
+        category security { null; };
+{% endif %}
         channel default_debug {
                 file "data/named.run";
                 severity dynamic;

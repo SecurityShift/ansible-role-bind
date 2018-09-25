@@ -10,3 +10,5 @@ bind_firewall_permit: False
 rndc_firewall_permit: False
 bind_allow_new_zones: false
 bind_request_ixfr: true
+bind_var_writable: False
+bind_security_log: True

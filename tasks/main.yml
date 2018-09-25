@@ -34,6 +34,15 @@
     - bind
     - selinux
 
+- name: Allow bind to write to /var/named
+  file:
+    name: /var/named
+    state: directory
+    mode: 0770
+  when: bind_var_writable
+  tags:
+    - bind
+
 - name: Make sure bind can pass through firewall
   firewalld:
     rich_rule: "rule family=ipv4 source address={{ item.source | default(item) }} service name=dns accept"
