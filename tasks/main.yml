@@ -8,7 +8,9 @@
   with_items:
     - bind
     - bind-utils
-  notify: restart named
+  notify:
+    - restart named
+    - update aide
   tags:
     - bind
     - install
@@ -20,7 +22,9 @@
     owner: root
     group: named
     mode: 0640
-  notify: reload named
+  notify:
+    - reload named
+    - update aide
   tags:
     - bind
     - config
@@ -30,6 +34,7 @@
     name: named_write_master_zones
     state: yes
     persistent: yes
+  notify: update aide
   tags:
     - bind
     - selinux
@@ -40,6 +45,7 @@
     state: directory
     mode: 0770
   when: bind_var_writable
+  notify: update aide
   tags:
     - bind
 
@@ -52,7 +58,9 @@
     state: '{{ item.state | default("enabled") }}'
   with_items: '{{ bind_firewall_permit }}'
   when: firewalld_enabled and bind_firewall_permit
-  notify: reload firewalld
+  notify:
+    - reload firewalld
+    - update aide
   tags:
     - security
     - firewall
@@ -68,7 +76,9 @@
     - '{{ rndc_firewall_permit }}'
     - [ udp, tcp ]
   when: firewalld_enabled and rndc_firewall_permit
-  notify: reload firewalld
+  notify:
+    - reload firewalld
+    - update aide
   tags:
     - bind
     - security
@@ -79,6 +89,7 @@
     name: named
     state: started
     enabled: True
+  notify: update aide
   tags:
     - bind
     - service

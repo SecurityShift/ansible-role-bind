@@ -45,6 +45,8 @@ options {
         allow-new-zones {% if bind_allow_new_zones %}yes{% else %}no{% endif %};
         request-ixfr {% if bind_request_ixfr %}yes{% else %}no{% endif %};
 
+        allow-transfer { localhost; };
+
         dnssec-enable yes;
         dnssec-validation yes;
 
